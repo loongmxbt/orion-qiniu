@@ -18,27 +18,16 @@ if (Meteor.isClient) {
             // switch file ext
             // different ext has different path
             console.log("client file: ");
-            console.log(file);
-            var path = "";
+            console.log(file); // client file exists
+            var path = "orionjs";
 
-            Meteor.call("qn_uptoken", function(err, ret) {
-                if (err) {
-                    failure(new Meteor.Error('qiniu-error', 'failure generate uptoken'));
+            QN.upload(file, path, function(error, result) {
+                if (error) {
+                    failure(error);
                 } else {
-                    var uptoken = ret;
-                    // console.log("uptoken: " + uptoken); // success
-                    Meteor.call("qn_upload", file, path, uptoken, function(err, ret){
-                        if (err) {
-                            failure(new Meteor.Error('qiniu-error', i18n('filesystem.messages.errorUploading')));
-                        } else {
-                            success(ret.fileUrl, {
-                               key: ret.key,
-                               hash: ret.hash
-                            })
-                        }
-                    })
+                    success();
                 };
-            });
+            })
 
         });
     }
